@@ -2,8 +2,8 @@ from typing import AsyncGenerator
 
 from sqlalchemy import create_engine
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, DeclarativeBase
+
+from sqlalchemy.orm import sessionmaker
 
 from src.config import DB_USER, DB_PASS, DB_HOST, DB_PORT, DB_NAME
 
@@ -15,11 +15,8 @@ engine = create_engine(
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-Base = declarative_base()
+# Base = declarative_base()
 
-
-class Base(DeclarativeBase):
-    pass
 
 
 engine = create_async_engine(DATABASE_URL)
