@@ -2,11 +2,16 @@ from fastapi import FastAPI
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
 
+from sqladmin import Admin
+
+from src.admin.views import ArcaneAdmin, UsersAdmin
 from src.auth.base_config import users, auth_backend
 from src.cards.router import router as card_router
 
 from src.auth.schemas import UserRead, UserCreate
 from redis import asyncio as aioredis
+
+from src.database import engine
 
 app = FastAPI()
 
@@ -32,5 +37,7 @@ async def startup_event():
     redis = aioredis.from_url("redis://localhost", encoding="utf8", decode_responses=True)
     FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
 
-def git_test():
-    pass
+admin = Admin(app=app, engine=engine)
+
+admin.add_view(ArcaneAdmin)
+admin.add_view(UsersAdmin)
