@@ -6,13 +6,35 @@ from starlette.requests import Request
 from starlette.responses import RedirectResponse
 
 from src.auth.base_config import current_active_user
+from src.auth.database import get_user_db
+from src.auth.manager import get_user_manager
+from src.auth.schemas import UserRead
+from src.database import get_async_session
+
+
+async def read_user(email: str, password: str):
+    try:
+        async with get_async_session() as session:
+            async with get_user_db(session) as user_db:
+                async with get_user_manager(user_db) as user_manager:
+                    user = await user_manager.read(
+                        UserRead(
+                            email=email, password=password
+                        )
+                    )
+                    print(f"User {user}")
+                    return user
+
+
+    except Exception:
+        print('no such user')
 
 
 class AdminAuth(AuthenticationBackend):
     async def login(self, request: Request) -> bool:
         form = await request.form()
         email, password = form["email"], form["password"]
-        user = current_active_user()
+        user = await read_user(email=email, password=password)
         if user:
             pass
 
