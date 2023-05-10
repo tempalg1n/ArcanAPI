@@ -63,10 +63,17 @@ async def get_arcane(slug_name: str, db: Session = Depends(get_async_session)):
 async def add_new_arcane(new_arcane: ArcaneBaseSchema,
                          session: AsyncSession = Depends(get_async_session),
                          user: User = Depends(current_active_user)):
-    stmt = insert(arcane).values(**new_arcane.dict())
-    await session.execute(stmt)
-    await session.commit()
-    return {"status": "success"}
+    if user.is_superuser:
+        stmt = insert(arcane).values(**new_arcane.dict())
+        await session.execute(stmt)
+        await session.commit()
+        return {"status": "success"}
+    else:
+        raise HTTPException(status_code=403, detail={
+            "status": "error",
+            "data": None,
+            "details": f"You have no access to that operation"
+        })
 
 
 @router.patch('/{slug_name}')
@@ -74,36 +81,50 @@ async def update_arcane_info(slug_name: str,
                              payload: ArcaneBaseSchema,
                              user: User = Depends(current_active_user),
                              db: Session = Depends(get_async_session)):
-    query = select(arcane).where(arcane.c.slug == slug_name)
-    results = await db.execute(query)
-    data = list(results.mappings())
-    if not data:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=f' Arcane {arcane} not found')
-    stmt = update(arcane).where(arcane.c.slug == slug_name).values(**payload.dict())
-    result = await db.execute(stmt)
-    data = list(result.mappings())
-    return {
-        "status": "success",
-        "data": data,
-        "details": "Arcane info updated"
-    }
+    if user.is_superuser:
+        query = select(arcane).where(arcane.c.slug == slug_name)
+        results = await db.execute(query)
+        data = list(results.mappings())
+        if not data:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                                detail=f' Arcane {arcane} not found')
+        stmt = update(arcane).where(arcane.c.slug == slug_name).values(**payload.dict())
+        result = await db.execute(stmt)
+        data = list(result.mappings())
+        return {
+            "status": "success",
+            "data": data,
+            "details": "Arcane info updated"
+        }
+    else:
+        raise HTTPException(status_code=403, detail={
+            "status": "error",
+            "data": None,
+            "details": f"You have no access to that operation"
+        })
 
 
 @router.delete('/{slug_name}')
 async def delete_arcane(slug_name: str,
                         db: Session = Depends(get_async_session),
                         user: User = Depends(current_active_user)):
-    query = select(arcane).where(arcane.c.slug == slug_name)
-    results = await db.execute(query)
-    data = list(results.mappings())
-    if not data:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=f' Arcane {arcane} not found')
-    stmt = delete(arcane).where(arcane.c.slug == slug_name)
-    await db.execute(stmt)
-    return {
-        "status": "success",
-        "data": data,
-        "details": f"Arcane {slug_name} was deleted"
-    }
+    if user.is_superuser:
+        query = select(arcane).where(arcane.c.slug == slug_name)
+        results = await db.execute(query)
+        data = list(results.mappings())
+        if not data:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                                detail=f' Arcane {arcane} not found')
+        stmt = delete(arcane).where(arcane.c.slug == slug_name)
+        await db.execute(stmt)
+        return {
+            "status": "success",
+            "data": data,
+            "details": f"Arcane {slug_name} was deleted"
+        }
+    else:
+        raise HTTPException(status_code=403, detail={
+            "status": "error",
+            "data": None,
+            "details": f"You have no access to that operation"
+        })
