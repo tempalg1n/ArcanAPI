@@ -34,4 +34,7 @@ async def startup_event():
 
 
 def git_test():
+    """
+    nothing
+    """
     pass
