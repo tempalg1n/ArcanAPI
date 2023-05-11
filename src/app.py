@@ -5,7 +5,7 @@ from fastapi_cache.backends.redis import RedisBackend
 from sqladmin import Admin
 
 from src.admin.auth import authentication_backend
-from src.admin.views import ArcaneAdmin, UsersAdmin
+from src.admin.views import ArcaneAdmin, UsersAdmin, RoleAdmin
 from src.auth.base_config import users, auth_backend
 from src.cards.router import router as card_router
 
@@ -42,3 +42,4 @@ admin = Admin(app=app, engine=engine, authentication_backend=authentication_back
 
 admin.add_view(ArcaneAdmin)
 admin.add_view(UsersAdmin)
+admin.add_view(RoleAdmin)

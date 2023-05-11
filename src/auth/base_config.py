@@ -3,10 +3,9 @@ from fastapi_users.authentication import JWTStrategy, AuthenticationBackend, Bea
 
 from src.auth.database import User
 from src.auth.manager import get_user_manager
+from src.config import SECRET
 
 bearer_transport = BearerTransport(tokenUrl="auth/jwt/login")
-
-SECRET = 'peepeepoopoo'
 
 
 def get_jwt_strategy() -> JWTStrategy:
@@ -23,5 +22,6 @@ users = FastAPIUsers[User, int](
     get_user_manager,
     [auth_backend]
 )
+
 
 current_active_user = users.current_user(active=True)

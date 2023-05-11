@@ -1,7 +1,7 @@
-from typing import Optional
+from typing import Optional, Union
 
 from fastapi import Depends, Request
-from fastapi_users import BaseUserManager, IntegerIDMixin, models, exceptions, schemas
+from fastapi_users import BaseUserManager, IntegerIDMixin, models, exceptions, schemas, InvalidPasswordException
 
 from src.auth.database import User, get_user_db
 
@@ -13,12 +13,11 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
     verification_token_secret = SECRET
 
     async def create(
-        self,
-        user_create: schemas.UC,
-        safe: bool = False,
-        request: Optional[Request] = None,
+            self,
+            user_create: schemas.UC,
+            safe: bool = False,
+            request: Optional[Request] = None,
     ) -> models.UP:
-
         await self.validate_password(user_create.password, user_create)
 
         existing_user = await self.user_db.get_by_email(user_create.email)
@@ -48,7 +47,50 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
     ):
         print(f"Verification requested for user {user.id}. Verification token: {token}")
 
+    async def validate_password(
+            self, password: str, user: Union[schemas.UC, models.UP]
+    ) -> None:
+        SpecialSym = ['$', '@', '#', '%']
+
+        if len(password) < 6:
+            raise InvalidPasswordException(
+                reason="Password should not contain e-mail"
+            )
+
+        if len(password) > 20:
+            raise InvalidPasswordException(
+                reason="length should be at least 6"
+            )
+
+        if not any(char.isdigit() for char in password):
+            raise InvalidPasswordException(
+                reason="length should be not be greater than 8"
+            )
+
+        if not any(char.isupper() for char in password):
+            raise InvalidPasswordException(
+                reason="Password should have at least one numeral"
+            )
+
+        if not any(char.islower() for char in password):
+            raise InvalidPasswordException(
+                reason="Password should have at least one uppercase letter"
+            )
+
+        if not any(char in SpecialSym for char in password):
+            raise InvalidPasswordException(
+                reason="Password should have at least one lowercase letter"
+            )
+
+        if len(password) < 8:
+            raise InvalidPasswordException(
+                reason="Password should be at least 8 characters"
+            )
+        if user.email in password:
+            raise InvalidPasswordException(
+                reason="Password should not contain e-mail"
+            )
+
 
 async def get_user_manager(user_db=Depends(get_user_db)):
     yield UserManager(user_db)
-

@@ -13,9 +13,10 @@ class Base(DeclarativeBase):
 role = Table(
     "role",
     metadata,
-    Column("id", primary_key=True),
+    Column("id", Integer, primary_key=True),
     Column("name", String, nullable=False),
-    Column("permissions", JSON)
+    Column("can_edit", Boolean, default=False, nullable=False),
+    Column('can_edit_users', Boolean, default=False, nullable=False)
 )
 
 user = Table(
@@ -50,7 +51,8 @@ arcane = Table(
     Column("combination", String),
     Column("archetypal", String),
     Column("health", String),
-    Column("remarks", String)
+    Column("remarks", String),
+    Column("caption", String(900))
 )
 
 
@@ -67,6 +69,10 @@ arcane = Table(
 #     is_verified = Column(Boolean, default=False, nullable=False)
 #
 #     __table_args__ = {'extend_existing': True}
+
+class Role(Base):
+    __table__ = role
+
 
 class User(Base):
     __table__ = user

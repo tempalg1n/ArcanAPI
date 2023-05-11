@@ -1,48 +1,40 @@
+import contextlib
 from typing import Optional
 
-from sqladmin import Admin
+from fastapi.security import OAuth2PasswordRequestForm
 from sqladmin.authentication import AuthenticationBackend
 from starlette.requests import Request
 from starlette.responses import RedirectResponse
 
-from src.auth.base_config import current_active_user
+from src.auth.base_config import auth_backend, get_jwt_strategy
 from src.auth.database import get_user_db
 from src.auth.manager import get_user_manager
-from src.auth.schemas import UserRead
+from src.config import SECRET_ADMIN
 from src.database import get_async_session
+
+get_async_session_context = contextlib.asynccontextmanager(get_async_session)
+get_user_db_context = contextlib.asynccontextmanager(get_user_db)
+get_user_manager_context = contextlib.asynccontextmanager(get_user_manager)
 
 
 async def read_user(email: str, password: str):
-    try:
-        async with get_async_session() as session:
-            async with get_user_db(session) as user_db:
-                async with get_user_manager(user_db) as user_manager:
-                    user = await user_manager.read(
-                        UserRead(
-                            email=email, password=password
-                        )
-                    )
-                    print(f"User {user}")
-                    return user
-
-
-    except Exception:
-        print('no such user')
+    async with get_async_session_context() as session:
+        async with get_user_db_context(session) as user_db:
+            async with get_user_manager_context(user_db) as user_manager:
+                credentials = OAuth2PasswordRequestForm(username=email, password=password, scope='')
+                user = await user_manager.authenticate(credentials)
+                return user
 
 
 class AdminAuth(AuthenticationBackend):
     async def login(self, request: Request) -> bool:
         form = await request.form()
-        email, password = form["email"], form["password"]
-        user = await read_user(email=email, password=password)
+        user = await read_user(email=form['username'], password=form['password'])
         if user:
-            pass
-
-        # Validate username/password credentials
-        # And update session
-        request.session.update({"token": "..."})
-
-        return True
+            auth = await auth_backend.login(get_jwt_strategy(), user)
+            token = eval(auth.body.decode('utf-8'))['access_token']
+            request.session.update({'token': token})
+            return True
 
     async def logout(self, request: Request) -> bool:
         # Usually you'd want to just clear the session
@@ -58,4 +50,4 @@ class AdminAuth(AuthenticationBackend):
         # Check the token in depth
 
 
-authentication_backend = AdminAuth(secret_key="...")
+authentication_backend = AdminAuth(secret_key=SECRET_ADMIN)
