@@ -1,75 +1,67 @@
-from typing import Optional, List
+from datetime import datetime
 
-from pydantic import BaseModel
+from sqlalchemy import Column, Integer, Table, String, TIMESTAMP, ForeignKey, Boolean, MetaData
+from sqlalchemy.orm import DeclarativeBase
 
-
-class DescriptionsSchema(BaseModel):
-    general: str
-    personal_condition: Optional[str] = None
-    deep_level: Optional[str] = None
-    job: Optional[str] = None
-    finances: Optional[str] = None
-    personal_relations: Optional[str] = None
-    health: Optional[str] = None
-    upside_down: Optional[str] = None
-    combinations: Optional[str] = None
-    archetypal: Optional[str] = None
-    remarks: Optional[str] = None
+metadata = MetaData()
 
 
-class ArcaneSchema(BaseModel):
-    name: str
-    attrs: List[str]
-    card: str
-    categories: DescriptionsSchema
-
-    class Config:
-        schema_extra = {
-            "example": {
-                "name": "Шут",
-                "attrs": "Набор$атрибутов",
-                "card": "https://taro.lv/images/uploads/167x300/18-arc-00.jpg",
-                "categories": {
-                    "general": "Общее описание",
-                    "personal_condition": "Личностное состояние",
-                    "deep_level": "На глубоком уровне",
-                    "job": "Карьера",
-                    "finances": "Финансы",
-                    "personal_relations": "Личные отношения",
-                    "health": "Здоровье",
-                    "upside_down": "Перевернутая карта",
-                    "combinations": "В комбинации с другими картами",
-                    "archetypal": "Архетипы",
-                    "remarks": "Примечания"
-                }
-            }
-        }
+class Base(DeclarativeBase):
+    pass
 
 
-class UserSchema(BaseModel):
-    tg_id: int
-    first_name: str
-    username: Optional[str] = None
-    data: Optional[dict] = None
+role = Table(
+    "role",
+    metadata,
+    Column("id", Integer, primary_key=True),
+    Column("name", String, nullable=False),
+    Column("can_edit", Boolean, default=False, nullable=False),
+    Column('can_edit_users', Boolean, default=False, nullable=False)
+)
 
-    class Config:
-        schema_extra = {
-            "example": {
-                "tg_id": "11112222",
-                "first_name": "Ivan",
-                "username": None,
-                "data": None,
-            }
-        }
+user = Table(
+    "user",
+    metadata,
+    Column("id", Integer, primary_key=True),
+    Column("email", String, nullable=False),
+    Column("username", String, nullable=False),
+    Column("hashed_password", String, nullable=False),
+    Column("registered_at", TIMESTAMP, default=datetime.utcnow()),
+    Column("role_id", Integer, ForeignKey(role.c.id)),
+    Column("is_active", Boolean, default=True, nullable=False),
+    Column("is_superuser", Boolean, default=False, nullable=False),
+    Column("is_verified", Boolean, default=False, nullable=False))
+
+arcane = Table(
+    "arcane",
+    metadata,
+    Column("id", Integer, primary_key=True),
+    Column("type", String, nullable=False, default='minor'),
+    Column("name", String, nullable=False),
+    Column("slug", String, nullable=False),
+    Column("card", String, nullable=False),
+    Column("brief", String),
+    Column("general", String),
+    Column("personal_condition", String),
+    Column("deep", String),
+    Column("career", String),
+    Column("finances", String),
+    Column("relations", String),
+    Column("upside_down", String),
+    Column("combination", String),
+    Column("archetypal", String),
+    Column("health", String),
+    Column("remarks", String)
+)
 
 
-def ResponseModel(data, message):
-    return {
-        "data": [data],
-        "code": 200,
-        "message": message,
-    }
+class Arcane(Base):
+    __table__ = arcane
 
 
-def ErrorResponseModel(error, code, message):
-    return {"error": error, "code": code, "message": message}
+class Role(Base):
+    __table__ = role
+
+
+class User(Base):
+    __table__ = user

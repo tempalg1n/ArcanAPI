@@ -21,6 +21,7 @@ class ArcaneBaseSchema(BaseModel):
     archetypal: Optional[str] = None
     health: Optional[str] = None
     remarks: Optional[str] = None
+    caption: Optional[str] = None
 
     class Config:
         orm_mode = True
@@ -30,5 +31,5 @@ class ArcaneBaseSchema(BaseModel):
 
 class ArcanesResponse(BaseModel):
     status: str
-    results: int
-    notes: List[ArcaneBaseSchema]
+    data: Optional[List[ArcaneBaseSchema]] = None
+    details: Optional[str] = None

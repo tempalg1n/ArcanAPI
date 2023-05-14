@@ -7,15 +7,19 @@ from starlette import status
 
 from src.auth.base_config import current_active_user
 from src.auth.database import User
-from src.cards.models import arcane
-from src.cards.schemas import ArcaneBaseSchema
+from src.cards.schemas import ArcaneBaseSchema, ArcanesResponse
+from src.common.api_examples import single_arcane_example, responses, all_arcanes_example
+from src.common.enums import RouteTag
 from src.database import get_async_session
-
+from src.models import arcane
 
 router = APIRouter()
 
 
-@router.get('/', description='Get all the arcanes, total is 78')
+@router.get('/', description='Get all the arcanes, total is 78', tags=[RouteTag.ARCANES],
+            response_model=ArcanesResponse,
+            responses={**responses, 200: {"content": all_arcanes_example}}
+            )
 @cache(expire=30)
 async def get_arcanes(db: Session = Depends(get_async_session),
                       limit: int = 10, page: int = 1, type: str = ''):
@@ -33,15 +37,24 @@ async def get_arcanes(db: Session = Depends(get_async_session),
         query = arcane.select().offset(skip).limit(limit)
     results = await db.execute(query)
     data = list(results.mappings())
-    return {
-        "status": "success",
-        "data": data,
-        "details": None
-    }
+    if data:
+        return {
+            "status": "success",
+            "data": data,
+            "details": None
+        }
+    else:
+        raise HTTPException(status_code=404, detail={
+            "status": "error",
+            "data": None,
+            "details": f"No such arcane"
+        })
 
 
 @router.get('/{slug_name}', description="Get certain arcane by it's name. For example 'fool', 'emperor', "
-                                        "'ten_of_wands', etc.")
+                                        "'ten_of_wands', etc.", tags=[RouteTag.ARCANES],
+            response_model=ArcanesResponse,
+            responses={**responses, 200: {"content": single_arcane_example}})
 async def get_arcane(slug_name: str, db: Session = Depends(get_async_session)):
     query = select(arcane).where(arcane.c.slug == slug_name)
     results = await db.execute(query)
@@ -49,7 +62,8 @@ async def get_arcane(slug_name: str, db: Session = Depends(get_async_session)):
     if data:
         return {
             "status": "success",
-            "arcane": data
+            "data": data,
+            "details": None
         }
     else:
         raise HTTPException(status_code=404, detail={
@@ -59,7 +73,7 @@ async def get_arcane(slug_name: str, db: Session = Depends(get_async_session)):
         })
 
 
-@router.post("")
+@router.post("", tags=[RouteTag.ARCANES])
 async def add_new_arcane(new_arcane: ArcaneBaseSchema,
                          session: AsyncSession = Depends(get_async_session),
                          user: User = Depends(current_active_user)):
@@ -67,7 +81,9 @@ async def add_new_arcane(new_arcane: ArcaneBaseSchema,
         stmt = insert(arcane).values(**new_arcane.dict())
         await session.execute(stmt)
         await session.commit()
-        return {"status": "success"}
+        return {"status": "success",
+                "data": None,
+                "details": None}
     else:
         raise HTTPException(status_code=403, detail={
             "status": "error",
@@ -76,7 +92,7 @@ async def add_new_arcane(new_arcane: ArcaneBaseSchema,
         })
 
 
-@router.patch('/{slug_name}')
+@router.patch('/{slug_name}', tags=[RouteTag.ARCANES])
 async def update_arcane_info(slug_name: str,
                              payload: ArcaneBaseSchema,
                              user: User = Depends(current_active_user),
@@ -104,7 +120,7 @@ async def update_arcane_info(slug_name: str,
         })
 
 
-@router.delete('/{slug_name}')
+@router.delete('/{slug_name}', tags=[RouteTag.ARCANES])
 async def delete_arcane(slug_name: str,
                         db: Session = Depends(get_async_session),
                         user: User = Depends(current_active_user)):

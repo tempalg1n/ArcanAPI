@@ -4,8 +4,7 @@ from fastapi import Depends, Request
 from fastapi_users import BaseUserManager, IntegerIDMixin, models, exceptions, schemas, InvalidPasswordException
 
 from src.auth.database import User, get_user_db
-
-SECRET = "poopoo"
+from src.config import SECRET
 
 
 class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
@@ -50,6 +49,12 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
     async def validate_password(
             self, password: str, user: Union[schemas.UC, models.UP]
     ) -> None:
+        """
+        passport validation func that will ensure that password is strength enough
+        :param password: passport typed by user
+        :param user: user data
+        :return:
+        """
         SpecialSym = ['$', '@', '#', '%']
 
         if len(password) < 6:
