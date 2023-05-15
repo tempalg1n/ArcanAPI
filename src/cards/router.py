@@ -5,13 +5,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Session
 from starlette import status
 
-from auth.base_config import current_active_user
-from auth.database import User
-from cards.schemas import ArcaneBaseSchema, ArcanesResponse
-from common.api_examples import single_arcane_example, responses, all_arcanes_example
-from common.enums import RouteTag
-from database import get_async_session
-from models import arcane
+from src.auth.base_config import current_active_user
+from src.auth.database import User
+from src.cards.schemas import ArcaneBaseSchema, ArcanesResponse
+from src.common.api_examples import single_arcane_example, responses, all_arcanes_example
+from src.common.enums import RouteTag
+from src.database import get_async_session
+from src.models import arcane
 
 router = APIRouter()
 

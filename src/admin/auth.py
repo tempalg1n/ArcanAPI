@@ -6,11 +6,11 @@ from sqladmin.authentication import AuthenticationBackend
 from starlette.requests import Request
 from starlette.responses import RedirectResponse
 
-from auth.base_config import auth_backend, get_jwt_strategy
-from auth.database import get_user_db
-from auth.manager import get_user_manager
-from config import SECRET_ADMIN
-from database import get_async_session
+from src.auth.base_config import auth_backend, get_jwt_strategy
+from src.auth.database import get_user_db
+from src.auth.manager import get_user_manager
+from src.config import SECRET_ADMIN
+from src.database import get_async_session
 
 get_async_session_context = contextlib.asynccontextmanager(get_async_session)
 get_user_db_context = contextlib.asynccontextmanager(get_user_db)

@@ -3,8 +3,8 @@ from typing import Optional, Union
 from fastapi import Depends, Request
 from fastapi_users import BaseUserManager, IntegerIDMixin, models, exceptions, schemas, InvalidPasswordException
 
-from auth.database import User, get_user_db
-from config import SECRET
+from src.auth.database import User, get_user_db
+from src.config import SECRET
 
 
 class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
