@@ -23,8 +23,8 @@ services:
     env_file:
       - .env-non-dev
     container_name: arcanapi_app
-#    command: bash -x "alembic upgrade head && gunicorn .app.app:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind=0.0.0.0:8000 --reload"
-    command: ["/ArcanAPI/scripts/app.sh"]
+#    command: bash -x "alembic upgrade head && gunicorn .src.src:src --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind=0.0.0.0:8000 --reload"
+    command: ["/ArcanAPI/scripts/src.sh"]
     ports:
       - "9999:8000"
     depends_on:

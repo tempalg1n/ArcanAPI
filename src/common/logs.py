@@ -91,5 +91,5 @@ class ArcanAPILogger:
         return loguru_logger.bind(method=None)
 
 
-# Instanciate generic logger for all the app
+# Instanciate generic logger for all the src
 logger = ArcanAPILogger.make_logger()
