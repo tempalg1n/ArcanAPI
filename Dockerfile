@@ -1,8 +1,8 @@
 FROM python:3.11
 
-RUN mkdir /ArnacAPI
+RUN mkdir /ArnacAPI_app
 
-WORKDIR /ArcanAPI
+WORKDIR /ArcanAPI_app
 
 COPY requirements.txt .
 
@@ -10,7 +10,7 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
-RUN chmod a+x docker/*.sh
+RUN chmod a+x scripts/*.sh
 
 RUN alembic upgrade head
 
