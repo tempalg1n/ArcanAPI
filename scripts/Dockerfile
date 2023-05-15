@@ -4,11 +4,11 @@ RUN mkdir /arcanapi_app
 
 WORKDIR /arcanapi_app
 
-COPY requirements.txt .
+COPY ../requirements.txt .
 
 RUN pip install -r requirements.txt
 
-COPY . .
+COPY .. .
 
 #RUN chmod a+x scripts/*.sh
 
