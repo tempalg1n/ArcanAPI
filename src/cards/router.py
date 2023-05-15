@@ -73,7 +73,9 @@ async def get_arcane(slug_name: str, db: Session = Depends(get_async_session)):
         })
 
 
-@router.post("", tags=[RouteTag.ARCANES])
+@router.post("", tags=[RouteTag.ARCANES],
+             description='Add new arcane. Only admin of superuser allowed. Also, why do you need that? There is '
+                         'already all of them.')
 async def add_new_arcane(new_arcane: ArcaneBaseSchema,
                          session: AsyncSession = Depends(get_async_session),
                          user: User = Depends(current_active_user)):
@@ -92,7 +94,8 @@ async def add_new_arcane(new_arcane: ArcaneBaseSchema,
         })
 
 
-@router.patch('/{slug_name}', tags=[RouteTag.ARCANES])
+@router.patch('/{slug_name}', tags=[RouteTag.ARCANES],
+              description='Update arcane info. Only admin of superuser allowed.')
 async def update_arcane_info(slug_name: str,
                              payload: ArcaneBaseSchema,
                              user: User = Depends(current_active_user),
@@ -120,7 +123,8 @@ async def update_arcane_info(slug_name: str,
         })
 
 
-@router.delete('/{slug_name}', tags=[RouteTag.ARCANES])
+@router.delete('/{slug_name}', tags=[RouteTag.ARCANES],
+               description='Delete one. Only admin of superuser allowed.')
 async def delete_arcane(slug_name: str,
                         db: Session = Depends(get_async_session),
                         user: User = Depends(current_active_user)):
