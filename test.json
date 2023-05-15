@@ -1,0 +1,19 @@
+{"name": "Шут",
+  "attrs": [
+                    "Какой-то",
+                    "набор",
+                    "атрибутов"
+                ],
+  "card": "https://taro.lv/images/uploads/167x300/18-arc-00.jpg",
+  "categories": {
+                    "general": "Общее описание",
+                    "personal_condition": "Личностное состояние",
+                    "deep_level": "На глубоком уровне",
+                    "job": "Карьера",
+                    "finances": "Финансы",
+                    "personal_relations": "Личные отношения",
+                    "health": "Здоровье",
+                    "upside_down": "Перевернутая карта",
+                    "combinations": "В комбинации с другими картами",
+                    "archetypal": "Архетипы",
+                    "remarks": "Примечания"}}
