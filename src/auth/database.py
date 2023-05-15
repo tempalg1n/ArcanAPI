@@ -7,8 +7,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Mapped
 
 
-from src.database import get_async_session
-from src.models import Base, role
+from database import get_async_session
+from models import Base, role
 
 
 class User(SQLAlchemyBaseUserTable[int], Base):

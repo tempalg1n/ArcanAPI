@@ -5,7 +5,7 @@ import sys
 from pathlib import Path
 
 from loguru import logger as loguru_logger
-from src.settings import settings
+from settings import settings
 
 
 class InterceptHandler(logging.Handler):

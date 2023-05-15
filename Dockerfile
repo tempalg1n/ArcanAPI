@@ -1,8 +1,8 @@
 FROM python:3.11
 
-RUN mkdir /ArnacAPI_app
+RUN mkdir /arcanapi_app
 
-WORKDIR /ArcanAPI_app
+WORKDIR /arcanapi_app
 
 COPY requirements.txt .
 
@@ -14,4 +14,6 @@ RUN chmod a+x scripts/*.sh
 
 RUN alembic upgrade head
 
-CMD gunicorn src.app:app --workers 1 --worker-class uvicorn.workers.UvicornWorker --bind=0.0.0.0:8000 --reload
+WORKDIR src
+
+CMD gunicorn app:app --workers 1 --worker-class uvicorn.workers.UvicornWorker --bind=0.0.0.0:8000 --reload

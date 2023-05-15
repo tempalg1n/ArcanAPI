@@ -10,19 +10,19 @@ from starlette.responses import JSONResponse
 from starlette.staticfiles import StaticFiles
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from src.admin.auth import authentication_backend
-from src.admin.views import ArcaneAdmin, UsersAdmin, RoleAdmin
-from src.auth.base_config import users, auth_backend
-from src.cards.router import router as card_router
+from admin.auth import authentication_backend
+from admin.views import ArcaneAdmin, UsersAdmin, RoleAdmin
+from auth.base_config import users, auth_backend
+from cards.router import router as card_router
 
-from src.auth.schemas import UserRead, UserCreate
+from auth.schemas import UserRead, UserCreate
 from redis import asyncio as aioredis
 
-from src.common.enums import RouteTag
-from src.common.logs import logger
-from src.config import REDIS_HOST, REDIS_PORT
-from src.database import engine
-from src.settings import settings
+from common.enums import RouteTag
+from common.logs import logger
+from config import REDIS_HOST, REDIS_PORT
+from database import engine
+from settings import settings
 
 app = FastAPI(title='ArcanAPI')
 

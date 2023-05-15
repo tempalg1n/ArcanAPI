@@ -1,6 +1,6 @@
 from sqladmin import ModelView
 
-from src.models import Arcane, User, Role
+from models import Arcane, User, Role
 
 
 class ArcaneAdmin(ModelView, model=Arcane):
