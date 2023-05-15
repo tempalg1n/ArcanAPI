@@ -21,7 +21,6 @@ class ArcaneBaseSchema(BaseModel):
     archetypal: Optional[str] = None
     health: Optional[str] = None
     remarks: Optional[str] = None
-    caption: Optional[str] = None
 
     class Config:
         orm_mode = True
