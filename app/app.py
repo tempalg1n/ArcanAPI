@@ -66,7 +66,7 @@ def custom_openapi():  # pragma: no cover
 
 app.openapi = custom_openapi
 
-app.mount("/src/static", StaticFiles(directory="src/static"), name="static")
+app.mount("/app/static", StaticFiles(directory="app/static"), name="static")
 
 app.logger = logger
 logger.info("ArcanAPI... Online !")
@@ -83,7 +83,7 @@ async def http_exception_handler(request: Request, exc: StarletteHTTPException):
 common_doc_settings = {
     # "openapi_url": app.openapi_url,
     "title": f"{settings.title} - Documentation",
-    "favicon_url": "src/static/favicon.png",
+    "favicon_url": "app/static/favicon.png",
 }
 
 
