@@ -5,7 +5,6 @@
 
 ## Table of contents
 * [✨ Live instance](#-live-instance)
-* [🐋 Docker](#-docker)
 * [🙏 Credits](#-credits)
 
 
