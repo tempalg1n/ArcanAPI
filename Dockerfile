@@ -10,7 +10,7 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
-RUN chmod a+x scripts/*.sh
+#RUN chmod a+x scripts/*.sh
 
 RUN alembic upgrade head
 
