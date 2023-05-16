@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Path
+from fastapi import APIRouter, Depends, HTTPException, Path, Query
 from fastapi_cache.decorator import cache
 from sqlalchemy import insert, select, update, delete
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -27,7 +27,8 @@ async def get_arcanes(
         db: Session = Depends(get_async_session),
         limit: int = 10,
         page: int = 1,
-        type: ArcanesTypes = Path(title='Type filter')
+        type: ArcanesTypes | None = Query(
+            None, title="Type of arcane (minor of major)", example='major')
 ):
     skip = (page - 1) * limit
     if type:
