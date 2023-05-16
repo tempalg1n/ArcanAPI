@@ -17,7 +17,7 @@ class ArcaneAdmin(ModelView, model=Arcane):
                          Arcane.combination: lambda m, a: m.combination[:20],
                          Arcane.archetypal: lambda m, a: m.archetypal[:20],
                          Arcane.health: lambda m, a: m.health[:20],
-                         Arcane.remarks: lambda m, a: m.remarks[:20]}
+                         Arcane.remarks: lambda m, a: m.remarks[:20] if m.remarks else m.remarks}
     name = 'Arcane'
     name_plural = 'Arcanes'
     icon = "fa-solid fa-wand-magic-sparkles"
