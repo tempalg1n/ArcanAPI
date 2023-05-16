@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Path
 from fastapi_cache.decorator import cache
 from sqlalchemy import insert, select, update, delete
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -9,20 +9,26 @@ from src.auth.base_config import current_active_user
 from src.auth.database import User
 from src.cards.schemas import ArcaneBaseSchema, ArcanesResponse
 from src.common.api_examples import single_arcane_example, responses, all_arcanes_example
-from src.common.enums import RouteTag
+from src.common.enums import RouteTag, ArcanesNames, ArcanesTypes
 from src.database import get_async_session
 from src.models import arcane
 
 router = APIRouter()
 
 
-@router.get('/', description='Get all the arcanes, total is 78', tags=[RouteTag.ARCANES],
+@router.get('/',
+            description='Get all the arcanes, total is 78',
+            tags=[RouteTag.ARCANES],
             response_model=ArcanesResponse,
             responses={**responses, 200: {"content": all_arcanes_example}}
             )
 @cache(expire=30)
-async def get_arcanes(db: Session = Depends(get_async_session),
-                      limit: int = 10, page: int = 1, type: str = ''):
+async def get_arcanes(
+        db: Session = Depends(get_async_session),
+        limit: int = 10,
+        page: int = 1,
+        type: ArcanesTypes = Path(title='Type filter')
+):
     skip = (page - 1) * limit
     if type:
         if type in ['minor', 'major']:
@@ -51,11 +57,16 @@ async def get_arcanes(db: Session = Depends(get_async_session),
         })
 
 
-@router.get('/{slug_name}', description="Get certain arcane by it's name. For example 'fool', 'emperor', "
-                                        "'ten_of_wands', etc.", tags=[RouteTag.ARCANES],
+@router.get('/{slug_name}',
+            description="Get certain arcane by it's name. For example 'fool', 'emperor', "
+                        "'ten_of_wands', etc.",
+            tags=[RouteTag.ARCANES],
             response_model=ArcanesResponse,
             responses={**responses, 200: {"content": single_arcane_example}})
-async def get_arcane(slug_name: str, db: Session = Depends(get_async_session)):
+async def get_arcane(
+        slug_name: ArcanesNames = Path(title='Key name of arcane'),
+        db: Session = Depends(get_async_session)
+):
     query = select(arcane).where(arcane.c.slug == slug_name)
     results = await db.execute(query)
     data = list(results.mappings())
