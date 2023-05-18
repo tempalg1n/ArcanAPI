@@ -8,7 +8,7 @@
 * [🙏 Credits](#-credits)
 
 
-## ✨ [Live instance](https://arcanapi.onrender.com/redoc)
+## ✨ [Live instance](https://arcanapi.onrender.com/)
 
 You can see and use a live version of the API here, the root URL being the Redoc documentation : https://arcanapi.onrender.com/redoc
 
