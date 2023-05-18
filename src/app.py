@@ -21,7 +21,7 @@ from redis import asyncio as aioredis
 from src.common.enums import RouteTag
 from src.common.logs import logger
 from src.config import REDIS_HOST, REDIS_PORT
-from src.database import engine
+from src.database import async_engine
 from src.settings import settings
 
 app = FastAPI(title='ArcanAPI')
@@ -107,7 +107,7 @@ async def startup_event():
     FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
 
 
-admin = Admin(app=app, engine=engine, authentication_backend=authentication_backend)
+admin = Admin(app=app, engine=async_engine, authentication_backend=authentication_backend)
 
 admin.add_view(ArcaneAdmin)
 admin.add_view(UsersAdmin)
