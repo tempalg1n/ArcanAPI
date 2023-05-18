@@ -87,11 +87,11 @@ common_doc_settings = {
 }
 
 
-@app.get("/", include_in_schema=False)
-async def overridden_redoc():
-    redoc_settings = common_doc_settings.copy()
-    redoc_settings["redoc_favicon_url"] = redoc_settings.pop("favicon_url")
-    return get_redoc_html(**redoc_settings)
+# @app.get("/", include_in_schema=False)
+# async def overridden_redoc():
+#     redoc_settings = common_doc_settings.copy()
+#     redoc_settings["redoc_favicon_url"] = redoc_settings.pop("favicon_url")
+#     return get_redoc_html(**redoc_settings)
 
 
 @app.get("/docs", include_in_schema=False)

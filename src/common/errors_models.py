@@ -16,5 +16,21 @@ class ArcaneDBErrorMessage(BaseModel):
     error: str = Field(
         ...,
         description="Message describing the DB operations error",
+        example="Timeout.",
+    )
+
+
+class ArcaneNotFoundMessage(BaseModel):
+    error: str = Field(
+        ...,
+        description="Message describing the DB operations error",
         example="Arcane not found",
+    )
+
+
+class ForbiddenErrorMessage(BaseModel):
+    error: str = Field(
+        ...,
+        description="Message describing that user have no rights",
+        example="You have no access to that operation."
     )

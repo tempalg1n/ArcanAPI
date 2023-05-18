@@ -1,7 +1,12 @@
 from datetime import datetime
+from typing import AsyncGenerator, AsyncIterator
 
-from sqlalchemy import Column, Integer, Table, String, TIMESTAMP, ForeignKey, Boolean, MetaData
+from fastapi import HTTPException
+from sqlalchemy import Column, Integer, Table, String, TIMESTAMP, ForeignKey, Boolean, MetaData, select
 from sqlalchemy.orm import DeclarativeBase
+
+from src.cards.response_models import ArcaneSchema
+from src.cards.use_cases import AsyncSession
 
 metadata = MetaData()
 
@@ -58,6 +63,19 @@ arcane = Table(
 class Arcane(Base):
     __table__ = arcane
 
+    @classmethod
+    async def read_all(cls, session: AsyncSession) -> AsyncIterator:
+        stmt = select(cls)
+        stream = await session.stream_scalars(stmt.order_by(cls.id))
+        async for row in stream:
+            yield row
+
+    @classmethod
+    async def read_by_slug(
+            cls, session: AsyncSession, slug_name: str):
+        stmt = select(cls).where(cls.slug == slug_name)
+        return await session.scalar(stmt.order_by(cls.slug))
+
 
 class Role(Base):
     __table__ = role
@@ -65,3 +83,15 @@ class Role(Base):
 
 class User(Base):
     __table__ = user
+
+
+class ReadArcane:
+    def __init__(self, session: AsyncSession) -> None:
+        self.async_session = session
+
+    async def execute(self, slug_name: str) -> ArcaneSchema:
+        async with self.async_session() as session:
+            arcane = await Arcane.read_by_slug(session, slug_name)
+            if not arcane:
+                raise HTTPException(status_code=404)
+            return ArcaneSchema.from_orm(arcane)
