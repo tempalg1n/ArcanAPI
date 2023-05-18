@@ -27,44 +27,44 @@ from src.settings import settings
 app = FastAPI(title='ArcanAPI')
 
 
-def custom_openapi():  # pragma: no cover
-    if app.openapi_schema:
-        return app.openapi_schema
+# def custom_openapi():  # pragma: no cover
+#     if app.openapi_schema:
+#         return app.openapi_schema
+#
+#     openapi_schema = get_openapi(
+#         title="ArcanAPI",
+#         description="API that will give you detailed information about all known tarot arcana",
+#         version=settings.app_version,
+#         contact={
+#             "name": 'Ivan "clappingseal" Muranov',
+#             "url": "https://github.com/tempalg1n/ArcanAPI",
+#             "email": "ivanmuranov595@gmail.com",
+#         },
+#         license_info={
+#             "name": "MIT",
+#         },
+#         routes=app.routes,
+#         tags=[
+#             {
+#                 "name": RouteTag.ARCANES,
+#                 "description": "Info about tarot arcanes",
+#             },
+#             {
+#                 "name": RouteTag.AUTH,
+#                 "description": "Registration and authorization",
+#             },
+#         ],
+#         #        servers=[{"url": settings.app_base_url, "description": "Production server"}],
+#     )
+#     # openapi_schema["info"]["x-logo"] = {
+#     #     "url": "https://files.tekrop.fr/overfast_api_logo_full_1000.png",
+#     #     "altText": "OverFast API Logo",
+#     # }
+#     app.openapi_schema = openapi_schema
+#     return app.openapi_schema
 
-    openapi_schema = get_openapi(
-        title="ArcanAPI",
-        description="API that will give you detailed information about all known tarot arcana",
-        version=settings.app_version,
-        contact={
-            "name": 'Ivan "clappingseal" Muranov',
-            "url": "https://github.com/tempalg1n/ArcanAPI",
-            "email": "ivanmuranov595@gmail.com",
-        },
-        license_info={
-            "name": "MIT",
-        },
-        routes=app.routes,
-        tags=[
-            {
-                "name": RouteTag.ARCANES,
-                "description": "Info about tarot arcanes",
-            },
-            {
-                "name": RouteTag.AUTH,
-                "description": "Registration and authorization",
-            },
-        ],
-        #        servers=[{"url": settings.app_base_url, "description": "Production server"}],
-    )
-    # openapi_schema["info"]["x-logo"] = {
-    #     "url": "https://files.tekrop.fr/overfast_api_logo_full_1000.png",
-    #     "altText": "OverFast API Logo",
-    # }
-    app.openapi_schema = openapi_schema
-    return app.openapi_schema
 
-
-app.openapi = custom_openapi
+# app.openapi = custom_openapi
 
 app.mount("/src/static", StaticFiles(directory="src/static"), name="static")
 

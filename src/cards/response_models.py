@@ -87,8 +87,8 @@ class ArcaneSchema(BaseModel):
         orm_mode = True
 
 
-# class AllArcanesShort(BaseModel):
-#     arcanes: list[Arcane] = Field(
-#         ...,
-#         description="List of arcanes"
-#     )
+class AllArcanesSchema(BaseModel):
+    arcanes: list[ArcaneSchema] = Field(
+        ...,
+        description="List of arcanes"
+    )

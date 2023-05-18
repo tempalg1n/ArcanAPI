@@ -14,4 +14,4 @@ COPY . .
 
 RUN alembic upgrade head
 
-#CMD gunicorn src.app:app --workers 1 --worker-class uvicorn.workers.UvicornWorker --bind=0.0.0.0:8000 --reload
+CMD gunicorn src.app:app --workers 1 --worker-class uvicorn.workers.UvicornWorker --bind=0.0.0.0:8000 --reload

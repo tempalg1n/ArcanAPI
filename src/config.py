@@ -1,17 +1,18 @@
 import os
 
-from dotenv import load_dotenv
+from environs import Env
 
-load_dotenv()
+env = Env()
+env.read_env()
 
-DB_HOST = os.environ.get("DB_HOST")
-DB_PORT = os.environ.get("DB_PORT")
-DB_NAME = os.environ.get("DB_NAME")
-DB_USER = os.environ.get("DB_USER")
-DB_PASS = os.environ.get("DB_PASS")
+DB_HOST = env("DB_HOST")
+DB_PORT = env("DB_PORT")
+DB_NAME = env("DB_NAME")
+DB_USER = env("DB_USER")
+DB_PASS = env("DB_PASS")
 
-REDIS_HOST = os.environ.get("REDIS_HOST")
-REDIS_PORT = os.environ.get("REDIS_PORT")
+REDIS_HOST = env("REDIS_HOST")
+REDIS_PORT = env("REDIS_PORT")
 
-SECRET = os.environ.get('SECRET')
-SECRET_ADMIN = os.environ.get('SECRET_ADMIN')
+SECRET = env('SECRET')
+SECRET_ADMIN = env('SECRET_ADMIN')
