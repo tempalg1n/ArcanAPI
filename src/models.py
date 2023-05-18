@@ -1,14 +1,16 @@
 from datetime import datetime
-from typing import AsyncGenerator, AsyncIterator
 
-from fastapi import HTTPException
+from fastapi import Depends
+from sqlalchemy.ext.asyncio import async_sessionmaker
+from typing import AsyncIterator, Annotated
+
 from sqlalchemy import Column, Integer, Table, String, TIMESTAMP, ForeignKey, Boolean, MetaData, select
 from sqlalchemy.orm import DeclarativeBase
 
-from src.cards.response_models import ArcaneSchema
-from src.cards.use_cases import AsyncSession
+from src.database import get_async_session
 
 metadata = MetaData()
+AsyncSession = Annotated[async_sessionmaker, Depends(get_async_session)]
 
 
 class Base(DeclarativeBase):
@@ -86,25 +88,3 @@ class Role(Base):
 
 class User(Base):
     __table__ = user
-
-
-class ReadArcane:
-    def __init__(self, session: AsyncSession) -> None:
-        self.async_session = session
-
-    async def execute(self, slug_name: str) -> ArcaneSchema:
-        async with self.async_session() as session:
-            arcane = await Arcane.read_by_slug(session, slug_name)
-            if not arcane:
-                raise HTTPException(status_code=404)
-            return ArcaneSchema.from_orm(arcane)
-
-
-class ReadAllArcanes:
-    def __init__(self, session: AsyncSession) -> None:
-        self.async_session = session
-
-    async def execute(self, page, limit, type) -> AsyncIterator[ArcaneSchema]:
-        async with self.async_session() as session:
-            async for arcane in Arcane.read_all(session, page, limit, type):
-                yield ArcaneSchema.from_orm(arcane)

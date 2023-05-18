@@ -27,44 +27,44 @@ from src.settings import settings
 app = FastAPI(title='ArcanAPI')
 
 
-# def custom_openapi():  # pragma: no cover
-#     if app.openapi_schema:
-#         return app.openapi_schema
-#
-#     openapi_schema = get_openapi(
-#         title="ArcanAPI",
-#         description="API that will give you detailed information about all known tarot arcana",
-#         version=settings.app_version,
-#         contact={
-#             "name": 'Ivan "clappingseal" Muranov',
-#             "url": "https://github.com/tempalg1n/ArcanAPI",
-#             "email": "ivanmuranov595@gmail.com",
-#         },
-#         license_info={
-#             "name": "MIT",
-#         },
-#         routes=app.routes,
-#         tags=[
-#             {
-#                 "name": RouteTag.ARCANES,
-#                 "description": "Info about tarot arcanes",
-#             },
-#             {
-#                 "name": RouteTag.AUTH,
-#                 "description": "Registration and authorization",
-#             },
-#         ],
-#         #        servers=[{"url": settings.app_base_url, "description": "Production server"}],
-#     )
-#     # openapi_schema["info"]["x-logo"] = {
-#     #     "url": "https://files.tekrop.fr/overfast_api_logo_full_1000.png",
-#     #     "altText": "OverFast API Logo",
-#     # }
-#     app.openapi_schema = openapi_schema
-#     return app.openapi_schema
+def custom_openapi():  # pragma: no cover
+    if app.openapi_schema:
+        return app.openapi_schema
+
+    openapi_schema = get_openapi(
+        title="ArcanAPI",
+        description="API that will give you detailed information about all known tarot arcana",
+        version=settings.app_version,
+        contact={
+            "name": 'Ivan "clappingseal" Muranov',
+            "url": "https://github.com/tempalg1n/ArcanAPI",
+            "email": "ivanmuranov595@gmail.com",
+        },
+        license_info={
+            "name": "MIT",
+        },
+        routes=app.routes,
+        tags=[
+            {
+                "name": RouteTag.ARCANES,
+                "description": "Info about tarot arcanes",
+            },
+            {
+                "name": RouteTag.AUTH,
+                "description": "Registration and authorization",
+            },
+        ],
+        servers=[{"url": settings.app_base_url, "description": "Production server"}],
+    )
+    # openapi_schema["info"]["x-logo"] = {
+    #     "url": "logo_url",
+    #     "altText": "ArcanAPI Logo",
+    # }
+    app.openapi_schema = openapi_schema
+    return app.openapi_schema
 
 
-# app.openapi = custom_openapi
+app.openapi = custom_openapi
 
 app.mount("/src/static", StaticFiles(directory="src/static"), name="static")
 
@@ -81,17 +81,17 @@ async def http_exception_handler(request: Request, exc: StarletteHTTPException):
 # We need to override default Redoc page in order to be
 # able to customize the favicon, same for Swagger
 common_doc_settings = {
-    # "openapi_url": src.openapi_url,
+    "openapi_url": app.openapi_url,
     "title": f"{settings.title} - Documentation",
     "favicon_url": "src/static/favicon.png",
 }
 
 
-# @app.get("/", include_in_schema=False)
-# async def overridden_redoc():
-#     redoc_settings = common_doc_settings.copy()
-#     redoc_settings["redoc_favicon_url"] = redoc_settings.pop("favicon_url")
-#     return get_redoc_html(**redoc_settings)
+@app.get("/", include_in_schema=False)
+async def overridden_redoc():
+    redoc_settings = common_doc_settings.copy()
+    redoc_settings["redoc_favicon_url"] = redoc_settings.pop("favicon_url")
+    return get_redoc_html(**redoc_settings)
 
 
 @app.get("/docs", include_in_schema=False)

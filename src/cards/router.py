@@ -1,20 +1,13 @@
-from fastapi import APIRouter, Depends, HTTPException, Path, Query, Request
+from fastapi import APIRouter, Depends, Path, Query, Request
 from fastapi_cache.decorator import cache
-from sqlalchemy import insert, select, update, delete
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import Session
 from starlette import status
 
-from src import models
-from src.auth.base_config import current_active_user
-from src.auth.database import User
 from src.cards.response_models import ArcaneSchema, AllArcanesSchema
-from src.cards.schemas import ArcaneBaseSchema
+from src.cards.use_cases import ReadAllArcanes, ReadArcane
 from src.common.enums import RouteTag, ArcanesNames, ArcanesTypes
 from src.common.errors_models import ArcaneNotFoundMessage
-from src.common.helpers import validation_error_handler, routes_responses
-from src.database import get_async_session
-from src.models import arcane, ReadArcane, ReadAllArcanes
+from src.common.helpers import routes_responses
+
 
 router = APIRouter()
 
