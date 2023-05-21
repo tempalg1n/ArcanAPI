@@ -78,7 +78,7 @@ class ArcaneSchema(BaseModel):
         example="and so on for all different interpretations of the meaning of certain arcane"
     )
     remarks: str | None = Field(
-        ...,
+        None,
         description="Remarks. Could be empty.",
         example="and so on for all different interpretations of the meaning of certain arcane"
     )
