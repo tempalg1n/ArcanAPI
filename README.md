@@ -17,5 +17,6 @@ This is my pet project.  Here I practice writing a `FastAPI` backend and look fo
 ## 🔹 Credits
 
 The tarot theme was inspired by my beloved wife, thank you! 🐷 Finding a topic for a project is not always easy, but here it even turned out interesting, lol.
+
 All info about arcanes owned by these guys. Sources:
 - Taro.lv (https://www.taro.lv/)
