@@ -20,3 +20,4 @@ The tarot theme was inspired by my beloved wife, thank you! 🐷 Finding a topic
 
 All info about arcanes owned by these guys. Sources:
 - Taro.lv (https://www.taro.lv/)
+
